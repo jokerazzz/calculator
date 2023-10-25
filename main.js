@@ -1,42 +1,41 @@
-const display = document.getElementById("display");
-const buttons = document.querySelectorAll(".buttons button");
+let display = document.querySelector(".display");
 
-buttons.forEach((button) => {
-  button.addEventListener("click", handleClick);
+let buttons = Array.from(document.querySelectorAll(".button"));
+let operators = ["+", "-", "*", "/"];
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    simulateButtonClick("=");
+  } else if (buttons.some((button) => button.innerText === e.key)) {
+    simulateButtonClick(e.key);
+  }
 });
 
-document.addEventListener("keydown", handleKey);
+buttons.map((button) => {
+  button.addEventListener("click", (e) => {
+    simulateButtonClick(e.target.innerText);
+  });
+});
 
-function handleClick(event) {
-  const value = event.target.textContent;
-  handleInput(value);
-}
+function simulateButtonClick(key) {
+  const currentText = display.innerText;
 
-function handleKey(event) {
-  let key = event.key;
-  if (key === "Enter") key = "=";
-  if (key === "%") key = "percentage";
-
-  if (/[\d.+\-*/%]/.test(key)) {
-    handleInput(key);
-  } else if (key === "Escape") {
-    display.value = "";
-  }
-}
-
-function handleInput(value) {
-  switch (value) {
-    case "C":
-      display.value = "";
-      break;
-    case "=":
-      try {
-        display.value = eval(display.value);
-      } catch (error) {
-        display.value = "Error";
-      }
-      break;
-    default:
-      display.value += value;
+  if (key === "C") {
+    display.innerText = "0";
+  } else if (key === "=") {
+    display.innerText = eval(display.innerText);
+  } else if (operators.includes(key)) {
+    if (operators.includes(currentText.charAt(currentText.length - 1))) {
+      display.innerText = currentText.slice(0, -1) + key;
+    } else {
+      display.innerText += key;
+    }
+  } else {
+    if (currentText === "0" || operators.includes(currentText)) {
+      display.innerText = key;
+    } else {
+      display.innerText += key;
+    }
   }
 }
