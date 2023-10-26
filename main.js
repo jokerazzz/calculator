@@ -1,7 +1,7 @@
 let display = document.querySelector(".display");
 
 let buttons = Array.from(document.querySelectorAll(".button"));
-let operators = ["+", "-", "*", "/"];
+let operators = ["+", "-", "*", "/", "."];
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
